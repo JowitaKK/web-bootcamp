@@ -1,0 +1,8 @@
+<h1> Result page </h1>
+
+<% data.Search.forEach(function(movie) {%>   <!---or data["Search"].forEach-->
+    <li><%= movie["Title"]%></li>
+    <%});
+%>
+
+<a href="/">Search again</a>
