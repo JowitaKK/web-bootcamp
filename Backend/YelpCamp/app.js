@@ -7,29 +7,33 @@ var seedDB = require("./seeds");
 var Comment = require("./models/comment");
 
 
+
 mongoose.connect("mongodb://localhost/yelpcamp", {useNewUrlParser: true});
 seedDB();
-
 app.use(bodyParser.urlencoded({extended : true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname+ "/public"));
 
-Campground.create(
-    {
-        name: "Salmon Creek", 
-        image: "https://www.camping.hr/cmsmedia/katalog/724/140-camp-turist-indian-tents.jpg"
-    }, function(err, campground){
-        if(err){
-            console.log(err);
-        } else {
-            console.log("Newly created campground");
-            console.log(campground);
-        }
-    });
+//console.log(__dirname);
 
-var campgrounds = [
-    {name: "Heya Creek", image:"https://img.freepik.com/free-vector/set-camping-tools-equipment_74855-222.jpg?size=626&ext=jpg" },
-    {name: "Salmon Book", image:"https://www.camp-liza.com/wp-content/uploads/2017/10/20170708_093155_HDR-1.jpg" }
-]
+
+// Campground.create(
+//     {
+//         name: "Salmon Creek", 
+//         image: "https://www.camping.hr/cmsmedia/katalog/724/140-camp-turist-indian-tents.jpg"
+//     }, function(err, campground){
+//         if(err){
+//             console.log(err);
+//         } else {
+//             console.log("Newly created campground");
+//             console.log(campground);
+//         }
+//     });
+
+// var campgrounds = [
+//     {name: "Heya Creek", image:"https://img.freepik.com/free-vector/set-camping-tools-equipment_74855-222.jpg?size=626&ext=jpg" },
+//     {name: "Salmon Book", image:"https://www.camp-liza.com/wp-content/uploads/2017/10/20170708_093155_HDR-1.jpg" }
+// ]
 
 app.get("/", function(req, res){
     res.render("landing.ejs");
@@ -76,7 +80,7 @@ app.get("/campgrounds/new", function(req, res){
 
 //SHOW by id
 app.get("/campgrounds/:id", function(req, res){
-    Camground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err){
             console.log(err);
         } else {
@@ -91,7 +95,7 @@ app.get("/campgrounds/:id", function(req, res){
 //cOMMENTS ROUTES
 //================
 
-app.get("/compgrounds?:i/comments/new", function(req, res){
+app.get("/compgrounds/:id/comments/new", function(req, res){
     //find campground by id
     Campground.findById(req.params.id, function(err, campground){
         if(err){
@@ -100,6 +104,30 @@ app.get("/compgrounds?:i/comments/new", function(req, res){
             res.render("comments/new", {campground: campground});
         }
     });
+});
+
+app.post("/compgrounds/:id/comments", function(req, res){
+    //lookup campground using ID
+    Campground.findById(req.params.id, function(err, campground){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds");
+        } else {
+            customElements.create(req.body.comment, function(err, comment){
+                if(err){
+                    console.log(err);
+    
+                } else {
+                    campground.comments.push(comment);
+                    campground.save();
+                    res.redirect("/campgrounds/" + campground._id);
+                }
+            });
+
+        }
+
+    });
+
 });
 
 
