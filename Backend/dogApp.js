@@ -7,19 +7,19 @@ var express = require('express'),
 	logger = require ('morgan'),
 	bodyParser = require ('body-parser')
 
-app.set ('voew engine', 'ejs');
-app.use(logger('dev');
+app.set ('view engine', 'ejs');
+app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true}));
 
 //========
 //DATABASE STUFF
 
 mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/dog_demo_app");
-var dogSchema = new monoose.Schema ({
+var dogSchema = new mongoose.Schema ({
 			name: String,
 			breed : String
 });
-var Dog = monoose.model("Dog", sogSchema);
+var Dog = mongoose.model("Dog", dogSchema);
 
 //=======
 // ROUTEs
@@ -46,5 +46,5 @@ app.post("/createDog", function (req, res){
 });
 
 app.listen(3000, function(){
-	console.log("sercing dog demon on portal 3000")
+	console.log("serching dog demon on portal 3000")
 });
