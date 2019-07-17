@@ -1,8 +1,12 @@
+var express = require("express");
+var router = express.Router();
+var Campground = require("../models/comment");
+
 //================
 //cOMMENTS ROUTES
 //================
 
-app.get("/compgrounds/:id/comments/new", function(req, res){
+router.app.get("/compgrounds/:id/comments/new", function(req, res){
     //find campground by id
     Campground.findById(req.params.id, function(err, campground){
         if(err){
@@ -13,7 +17,7 @@ app.get("/compgrounds/:id/comments/new", function(req, res){
     });
 });
 
-app.post("/compgrounds/:id/comments", function(req, res){
+router.app.post("/compgrounds/:id/comments", isLoggedIn, function(req, res){
     //lookup campground using ID
     Campground.findById(req.params.id, function(err, campground){
         if(err){
